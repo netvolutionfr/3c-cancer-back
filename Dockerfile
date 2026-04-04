@@ -20,9 +20,8 @@ COPY --from=builder /app/node_modules ./node_modules
 RUN npm prune --omit=dev
 
 # Copier les artefacts du build et les sources nécessaires au runtime
-COPY --from=builder /app/build ./build
-COPY --from=builder /app/config ./config
-COPY --from=builder /app/src ./src
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/.strapi ./.strapi
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/database ./database
 
