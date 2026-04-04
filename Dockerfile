@@ -21,9 +21,11 @@ COPY package*.json ./
 COPY --from=builder /app/node_modules ./node_modules
 RUN npm prune --omit=dev
 
-# CORRECTION : On ne copie QUE le code compilé (dist) et les éléments statiques.
-# On supprime la copie de /src et /config qui causait le crash TypeScript.
+# Strapi v5 cherche config/ et src/ à la racine — on copie les versions compilées
+# (JS, pas TS) depuis dist/ pour éviter les crashes TypeScript
 COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/dist/config ./config
+COPY --from=builder /app/dist/src ./src
 COPY --from=builder /app/.strapi ./.strapi
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/database ./database
