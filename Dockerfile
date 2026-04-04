@@ -14,9 +14,10 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-# Installer uniquement les dépendances de production
+# Réutiliser node_modules du builder en supprimant les devDeps (évite un 2e téléchargement)
 COPY package*.json ./
-RUN npm ci --omit=dev && npm cache clean --force
+COPY --from=builder /app/node_modules ./node_modules
+RUN npm prune --omit=dev
 
 # Copier les artefacts du build et les sources nécessaires au runtime
 COPY --from=builder /app/build ./build
