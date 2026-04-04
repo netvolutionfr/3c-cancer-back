@@ -21,14 +21,11 @@ COPY package*.json ./
 COPY --from=builder /app/node_modules ./node_modules
 RUN npm prune --omit=dev
 
-# Strapi v5 cherche config/ et src/ à la racine — on copie les versions compilées
-# (JS, pas TS) depuis dist/ pour éviter les crashes TypeScript
+# tsconfig.json est requis : strapi start lit l'outDir pour calculer distDir = dist/
+# Sans lui, Strapi croit que ce n'est pas un projet TS et cherche les assets dans /app/build
+COPY --from=builder /app/tsconfig.json ./tsconfig.json
+# dist/ contient le code compilé ET dist/build/ (admin UI) générés par strapi build
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/dist/config ./config
-COPY --from=builder /app/dist/src ./src
-# strapi build génère l'admin UI dans .strapi/client/
-# mais strapi start le cherche dans dist/build/ (voir serve-admin-panel.js)
-COPY --from=builder /app/.strapi/client ./dist/build
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/database ./database
 
