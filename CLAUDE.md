@@ -61,6 +61,49 @@ DATABASE_HOST / DATABASE_PORT / DATABASE_NAME / DATABASE_USERNAME / DATABASE_PAS
 APP_KEYS / API_TOKEN_SALT / ADMIN_JWT_SECRET / JWT_SECRET / TRANSFER_TOKEN_SALT / ENCRYPTION_KEY
 ```
 
+## Déploiement
+
+### Première mise en prod (manuelle — avant GitHub Actions)
+
+Sur le VPS (Debian), en tant qu'utilisateur avec accès Docker :
+
+```bash
+# 1. Cloner le dépôt
+git clone <repo> /opt/3c-cancer-back
+cd /opt/3c-cancer-back
+
+# 2. Créer et remplir le .env de production
+cp .env.example .env
+# → remplir DATABASE_*, APP_KEYS, *_SECRET, *_SALT, ENCRYPTION_KEY
+# → ajouter NODE_ENV=production et URL=https://3c3caps.siovision.fr
+
+# 3. Premier build et démarrage
+docker compose -f docker-compose.prod.yml up --build -d
+
+# 4. Installer et configurer Nginx
+sudo cp nginx/3c3caps.conf /etc/nginx/sites-available/3c3caps
+sudo ln -s /etc/nginx/sites-available/3c3caps /etc/nginx/sites-enabled/
+sudo nginx -t && sudo systemctl reload nginx
+
+# 5. Générer le certificat SSL
+sudo certbot --nginx -d 3c3caps.siovision.fr
+
+# 6. Créer le compte admin Strapi (première connexion sur /admin)
+```
+
+### Déploiement continu (GitHub Actions)
+
+Push sur `main` → SSH sur le VPS → `git pull` + `docker compose up --build -d`.
+
+Secrets GitHub requis : `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`, `VPS_PORT`.
+
+Le workflow est dans `.github/workflows/deploy.yml`. Strapi écoute sur `127.0.0.1:1337`, Nginx fait le proxy HTTPS.
+
+### Volumes Docker
+
+- `pgdata` — données PostgreSQL (persistant)
+- `uploads` — médias uploadés via l'admin Strapi (persistant)
+
 ## Considérations front-end
 
 L'API doit favoriser une **mise en cache agressive** côté client (les hôpitaux sont souvent en zone blanche). Concevoir les endpoints et les réponses en gardant cela en tête.
