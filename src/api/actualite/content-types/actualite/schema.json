@@ -1,0 +1,41 @@
+{
+  "kind": "collectionType",
+  "collectionName": "actualites",
+  "info": {
+    "singularName": "actualite",
+    "pluralName": "actualites",
+    "displayName": "Actualité",
+    "description": "Le flux d'actualités et le calendrier des événements de l'association"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "titre": {
+      "type": "string",
+      "required": true
+    },
+    "datePublication": {
+      "type": "datetime",
+      "required": true
+    },
+    "imageCouverture": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
+    },
+    "contenu": {
+      "type": "richtext",
+      "required": true
+    },
+    "estEvenement": {
+      "type": "boolean",
+      "default": false,
+      "description": "Cochez cette case s'il s'agit d'une date à mettre en avant dans le calendrier"
+    }
+  }
+}

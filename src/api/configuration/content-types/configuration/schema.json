@@ -1,0 +1,32 @@
+{
+  "kind": "singleType",
+  "collectionName": "configurations",
+  "info": {
+    "singularName": "configuration",
+    "pluralName": "configurations",
+    "displayName": "Configuration Globale",
+    "description": "Paramètres uniques de l'association (Contact, Adresse)"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "nomAssociation": {
+      "type": "string",
+      "default": "3C des 3 Caps"
+    },
+    "adressePostale": {
+      "type": "text"
+    },
+    "telephone": {
+      "type": "string"
+    },
+    "horaires": {
+      "type": "richtext"
+    },
+    "emailContact": {
+      "type": "email"
+    }
+  }
+}
