@@ -47,7 +47,7 @@ Le déploiement en production est automatisé via GitHub Actions (`.github/workf
 
 ```bash
 # Build de l'image et démarrage
-docker compose -f docker-compose.prod.yml up --build -d
+docker compose up --build -d
 ```
 
 Voir `nginx/3c3caps.conf` pour la configuration du reverse proxy.

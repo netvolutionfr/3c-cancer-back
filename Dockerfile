@@ -2,9 +2,11 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 
+# On installe les dépendances
 COPY package*.json ./
 RUN npm ci
 
+# On copie le reste du code et on compile
 COPY . .
 RUN npm run build
 
@@ -14,16 +16,15 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 
-# Réutiliser node_modules du builder en supprimant les devDeps (évite un 2e téléchargement)
+# On récupère les node_modules et on nettoie les dépendances de dev
 COPY package*.json ./
 COPY --from=builder /app/node_modules ./node_modules
 RUN npm prune --omit=dev
 
-# Copier les artefacts du build et les sources nécessaires au runtime
+# CORRECTION : On ne copie QUE le code compilé (dist) et les éléments statiques.
+# On supprime la copie de /src et /config qui causait le crash TypeScript.
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/.strapi ./.strapi
-COPY --from=builder /app/config ./config
-COPY --from=builder /app/src ./src
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/database ./database
 

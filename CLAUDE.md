@@ -78,7 +78,7 @@ cp .env.example .env
 # → ajouter NODE_ENV=production et URL=https://3c3caps.siovision.fr
 
 # 3. Premier build et démarrage
-docker compose -f docker-compose.prod.yml up --build -d
+docker compose up --build -d
 
 # 4. Installer et configurer Nginx
 sudo cp nginx/3c3caps.conf /etc/nginx/sites-available/3c3caps
