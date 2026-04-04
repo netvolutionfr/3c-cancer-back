@@ -20,13 +20,13 @@ jobs:
           port: ${{ secrets.VPS_PORT || 22 }}
           script: |
             set -e
-            cd /opt/3c-cancer-back
+            cd /home/asso3c/3c-cancer-back
 
             echo "==> Pull du code source"
             git pull origin main
 
             echo "==> Build et redémarrage des conteneurs"
-            docker compose -f docker-compose.prod.yml up --build -d
+            docker compose up --build -d
 
             echo "==> Nettoyage des images obsolètes"
             docker image prune -f

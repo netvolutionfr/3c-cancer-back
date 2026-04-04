@@ -26,7 +26,9 @@ RUN npm prune --omit=dev
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/dist/config ./config
 COPY --from=builder /app/dist/src ./src
-COPY --from=builder /app/.strapi ./.strapi
+# strapi build génère l'admin UI dans .strapi/client/
+# mais strapi start le cherche dans dist/build/ (voir serve-admin-panel.js)
+COPY --from=builder /app/.strapi/client ./dist/build
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/database ./database
 

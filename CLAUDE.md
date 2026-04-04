@@ -69,8 +69,8 @@ Sur le VPS (Debian), en tant qu'utilisateur avec accès Docker :
 
 ```bash
 # 1. Cloner le dépôt
-git clone <repo> /opt/3c-cancer-back
-cd /opt/3c-cancer-back
+git clone <repo> ~/3c-cancer-back
+cd ~/3c-cancer-back
 
 # 2. Créer et remplir le .env de production
 cp .env.example .env
