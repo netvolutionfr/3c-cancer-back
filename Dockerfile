@@ -21,9 +21,9 @@ COPY package*.json ./
 COPY --from=builder /app/node_modules ./node_modules
 RUN npm prune --omit=dev
 
-# tsconfig.json est requis : strapi start lit l'outDir pour calculer distDir = dist/
-# Sans lui, Strapi croit que ce n'est pas un projet TS et cherche les assets dans /app/build
-COPY --from=builder /app/tsconfig.json ./tsconfig.json
+# tsconfig.json minimal : strapi start détecte un projet TS et lit outDir=dist
+# sans tenter de compiler (include/files vides évitent TS18003)
+RUN echo '{"compilerOptions":{"outDir":"dist"},"include":[],"files":[]}' > tsconfig.json
 # dist/ contient le code compilé ET dist/build/ (admin UI) générés par strapi build
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/public ./public
