@@ -93,7 +93,7 @@ sudo certbot --nginx -d 3c3caps.siovision.fr
 
 ### Déploiement continu (GitHub Actions)
 
-Push sur `main` → SSH sur le VPS → `git pull` + `docker compose up --build -d`.
+Push sur `master` → SSH sur le VPS → `git pull` + `docker compose up --build -d`.
 
 Secrets GitHub requis : `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`, `VPS_PORT`.
 

@@ -3,7 +3,7 @@ name: Deploy to production
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   deploy:
@@ -23,7 +23,7 @@ jobs:
             cd /home/asso3c/3c-cancer-back
 
             echo "==> Pull du code source"
-            git pull origin main
+            git pull origin master
 
             echo "==> Build et redémarrage des conteneurs"
             docker compose up --build -d

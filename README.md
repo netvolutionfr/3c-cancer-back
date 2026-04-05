@@ -43,7 +43,7 @@ Le contenu riche (`contenu`) est formaté en **Markdown**.
 
 ## Déploiement
 
-Le déploiement en production est automatisé via GitHub Actions (`.github/workflows/deploy.yml`) : chaque push sur `main` déclenche un déploiement SSH sur le VPS.
+Le déploiement en production est automatisé via GitHub Actions (`.github/workflows/deploy.yml`) : chaque push sur `master` déclenche un déploiement SSH sur le VPS.
 
 ```bash
 # Build de l'image et démarrage
