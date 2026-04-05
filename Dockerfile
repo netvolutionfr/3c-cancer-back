@@ -23,7 +23,7 @@ RUN npm prune --omit=dev
 
 # tsconfig.json minimal : strapi start détecte un projet TS et lit outDir=dist
 # sans tenter de compiler (include/files vides évitent TS18003)
-RUN echo '{"compilerOptions":{"outDir":"dist"},"include":[],"files":[]}' > tsconfig.json
+RUN echo '{"compilerOptions":{"outDir":"dist"},"include":["./stub.ts"]}' > tsconfig.json && touch stub.ts
 # dist/ contient le code compilé ET dist/build/ (admin UI) générés par strapi build
 COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/public ./public
