@@ -35,7 +35,7 @@ Toujours utiliser les conventions et méthodes natives de l'API Strapi v5 pour l
 | `actualite` | Collection | Flux d'actualités et calendrier. `estEvenement: true` pour distinguer les événements calendrier des news. Draft & Publish activé. |
 | `configuration` | Single Type | Données de contact globales de l'association (toujours live, pas de draft). |
 
-Chaque module suit la structure Strapi standard : `content-types/<name>/schema.json` + optionnels `routes/`, `controllers/`, `services/`.
+Chaque module a la structure complète : `content-types/<name>/schema.json`, `routes/`, `controllers/`, `services/`. Les routes sont **restreintes aux GET uniquement** via `only: ['find', 'findOne']` (ou `['find']` pour le single type `configuration`) — ne jamais exposer POST/PUT/DELETE sur l'API publique.
 
 ### Types générés (`types/generated/`)
 
@@ -46,6 +46,13 @@ Définitions TypeScript auto-générées par Strapi à partir des schémas. Ne p
 - `api.ts` : pagination par défaut 25 items, max 100, `total` inclus dans les réponses.
 - `database.ts` : PostgreSQL via variables d'environnement ; supporte aussi SQLite/MySQL.
 - `middlewares.ts` : stack standard (logger, CORS, sécurité, body parsing).
+- `plugins.ts` : plugin `@strapi/plugin-documentation` activé uniquement hors production.
+
+### Documentation API (OpenAPI)
+
+Disponible en développement sur `http://localhost:1337/documentation` (Swagger UI).
+
+Le fichier de spec généré est dans `src/extensions/documentation/documentation/1.0.0/full_documentation.json` — il est régénéré automatiquement à chaque démarrage en dev. Désactivé en production (`NODE_ENV=production`).
 
 ### Admin UI (`src/admin/app.tsx`)
 
@@ -56,12 +63,23 @@ Configurée en **français uniquement**. Étendre ici pour ajouter des plugins o
 Copier `.env.example` → `.env`. Variables requises :
 
 ```
+NODE_ENV=development
 DATABASE_CLIENT=postgres
 DATABASE_HOST / DATABASE_PORT / DATABASE_NAME / DATABASE_USERNAME / DATABASE_PASSWORD
 APP_KEYS / API_TOKEN_SALT / ADMIN_JWT_SECRET / JWT_SECRET / TRANSFER_TOKEN_SALT / ENCRYPTION_KEY
 ```
 
+En production sur le VPS, `NODE_ENV=production` et `DATABASE_HOST=postgres` (nom du service Docker Compose).
+
 ## Déploiement
+
+### Dockerfile — points clés
+
+Le build multi-stage (builder → runner) a plusieurs particularités liées à Strapi v5 :
+
+- `tsconfig.json` minimal généré dans le runner (`{"compilerOptions":{"outDir":"dist"},"include":["./stub.ts"]}` + `stub.ts` vide) : requis pour que `strapi start` détecte le projet comme TypeScript et utilise `dist/` comme `distDir`. Sans lui, l'admin UI et les configs ne sont pas trouvés.
+- `dist/` contient tout le code compilé ET `dist/build/` (admin UI) générés par `strapi build`.
+- Les volumes `pgdata` et `uploads` sont persistants — un redéploiement ne touche jamais les données PostgreSQL.
 
 ### Première mise en prod (manuelle — avant GitHub Actions)
 
@@ -76,6 +94,7 @@ cd ~/3c-cancer-back
 cp .env.example .env
 # → remplir DATABASE_*, APP_KEYS, *_SECRET, *_SALT, ENCRYPTION_KEY
 # → ajouter NODE_ENV=production et URL=https://3c3caps.siovision.fr
+# → DATABASE_HOST=postgres (nom du service Docker, pas 127.0.0.1)
 
 # 3. Premier build et démarrage
 docker compose up --build -d
@@ -101,7 +120,7 @@ Le workflow est dans `.github/workflows/deploy.yml`. Strapi écoute sur `127.0.0
 
 ### Volumes Docker
 
-- `pgdata` — données PostgreSQL (persistant)
+- `pgdata` — données PostgreSQL (persistant, jamais affecté par un redéploiement)
 - `uploads` — médias uploadés via l'admin Strapi (persistant)
 
 ## Considérations front-end
