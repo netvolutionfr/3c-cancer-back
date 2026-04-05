@@ -23,6 +23,8 @@ exports/
 .strapi-updater.json
 .strapi-cloud.json
 license.txt
+specification.json
+src/extensions/documentation/documentation/
 
 ############################
 # TypeScript
