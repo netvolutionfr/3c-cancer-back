@@ -1,6 +1,6 @@
 services:
   strapi:
-    build: .
+    image: ghcr.io/netvolutionfr/3c-cancer-back:latest
     restart: unless-stopped
     env_file: .env
     ports:
