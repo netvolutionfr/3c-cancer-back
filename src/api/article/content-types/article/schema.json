@@ -44,6 +44,19 @@
     "sectionParente": {
       "type": "string",
       "description": "Ex: 'Les étapes clés', 'Vos Documents expliqués'..."
+    },
+    "couleurIcone": {
+      "type": "string",
+      "description": "Couleur de l'icône (ex: purple, blue, red, green)"
+    },
+    "styleAffichage": {
+      "type": "enumeration",
+      "enum": [
+        "liste",
+        "grille"
+      ],
+      "default": "liste",
+      "description": "Style d'affichage : liste classique ou grille de boutons"
     }
   }
 }
